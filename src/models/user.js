@@ -19,6 +19,11 @@ const userSchema = new Schema({
     required: true,
     trim: true,
   },
+  name: {
+    type: String,
+    required: false,
+    trim: true,
+  },
   roles: {
     admin: {
       type: Boolean,
