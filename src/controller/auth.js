@@ -1,7 +1,7 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const config = require('../../config');
-const User = require('../models/user');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const config = require("../../config");
+const User = require("../models/user");
 
 const { secret } = config;
 
@@ -18,20 +18,10 @@ module.exports.authenthicateUser = async (req, res, next) => {
   userFind.then((doc) => {
     if (!doc) {
       return res.status(400).json({
-        message: 'User Not Exist',
+        message: "User Not Exist",
       });
     }
-    bcrypt.compare(password, doc.password, (err, data) => {
-      // if error than throw error
-      if (err) console.info(err);
-
-      // if both match than you can do anything
-      else if (!data) {
-        return res.status(404).json({
-          message: 'Incorrect Password !',
-        });
-      }
-
+    if (password === doc.password) {
       jwt.sign(
         {
           uid: doc._id,
@@ -46,8 +36,12 @@ module.exports.authenthicateUser = async (req, res, next) => {
           if (err) console.error(err);
 
           return res.status(200).json({ token });
-        },
+        }
       );
-    });
+    } else {
+      return res.status(404).json({
+        message: "Incorrect Password !",
+      });
+    }
   });
 };
